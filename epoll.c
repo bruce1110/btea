@@ -10,7 +10,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define    MAXLINE        4096
+#include "cjson/cJSON.h"
+
+#define    MAXLINE        1024
 #define    LISTENQ        20
 #define    SERV_PORT    9877
 
@@ -19,6 +21,7 @@ int main(int argc, char* argv[])
 	int i, maxi, listenfd, connfd, sockfd, epfd,nfds;
 	ssize_t n;
 	char BUF[MAXLINE];
+	memset(BUF, 0 , sizeof(BUF));
 	socklen_t clilen;
 
 	//ev用于注册事件,数组用于回传要处理的事件
@@ -64,13 +67,14 @@ int main(int argc, char* argv[])
 				printf("accapt a connection from %s\n", str);
 
 				ev.data.fd=connfd;
-				ev.events=EPOLLIN|EPOLLET;
+				ev.events=EPOLLIN|EPOLLET;//事件类型为读
 				epoll_ctl(epfd,EPOLL_CTL_ADD,connfd,&ev);
 			}
-			else if (events[i].events&EPOLLIN)
+			else if (events[i].events&EPOLLIN)//包括断开连接
 				//如果是已经连接的用户，并且收到数据，那么进行读入。
 
 			{
+				memset(BUF, 0, sizeof(BUF));
 				printf("EPOLLIN\n");
 				if ( (sockfd = events[i].data.fd) < 0)
 					continue;
@@ -85,22 +89,32 @@ int main(int argc, char* argv[])
 					events[i].data.fd = -1;
 				}
 				BUF[n] = '\0';
+				printf("%s\n", BUF);
+				/* cJSON * root = cJSON_Parse(BUF); */
+				/* char *rendered = cJSON_Print(root); */
+				/* printf("%s", rendered); */
+				/* char * msg = "这是回复："; */
+				/* strcat(BUF , "(这是回复)\n"); */
+				/* printf("msg:%s",BUF); */
 				printf("AFTER EPOLLIN\n");
 
 				ev.data.fd=sockfd;
-				ev.events=EPOLLOUT|EPOLLET;
+				ev.events=EPOLLOUT|EPOLLET;//事件类型为写,当客户端read时触发
 				//读完后准备写
 				epoll_ctl(epfd,EPOLL_CTL_MOD,sockfd,&ev);
-
+				/* printf("begin to write\n"); */
+				/* write(events[i].data.fd, BUF, strlen(BUF)); */
+				/* printf("write end\n"); */
 			}
 			else if(events[i].events&EPOLLOUT) // 如果有数据发送
-
 			{
 				sockfd = events[i].data.fd;
-				write(sockfd, BUF, n);
+				strcat(BUF, "(回复消息)");
+				printf("begin to write%s\n", BUF);
+				write(sockfd, BUF, strlen(BUF));
 
 				ev.data.fd=sockfd;
-				ev.events=EPOLLIN|EPOLLET;
+				ev.events=EPOLLIN|EPOLLET;//事件类型为读
 				//写完后，这个sockfd准备读
 				epoll_ctl(epfd,EPOLL_CTL_MOD,sockfd,&ev);
 			}
