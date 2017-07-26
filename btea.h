@@ -27,7 +27,6 @@
  * EPOLL_CTL_MOD：修改已经注册的fd的监听事件
  * EPOLL_CTL_DEL：从epfd中删除一个fd
  *
- *struct epoll_event:
  * typedef union epoll_data {
  * void *ptr;  指向用户自定义数据 
  * int fd;  注册的文件描述符 

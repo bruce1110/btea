@@ -9,19 +9,37 @@
 #include <sys/types.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <iconv.h>
 
 #include "cjson/cJSON.h"
 
 #define    MAXLINE        1024
 #define    LISTENQ        20
 #define    SERV_PORT    9877
-
+int convmsg(char * src, char * des, size_t srclen, size_t deslen, const char *srctype, const char *destype)
+{
+	iconv_t cd = iconv_open(destype, srctype);
+	if (cd == (iconv_t)-1)
+	{
+		perror ("iconv_open");
+	}
+	memset(des, 0, deslen);
+	size_t ret = iconv(cd, &src, &srclen, &des, &deslen);
+	if(ret == -1)
+	{
+		perror("iconv");
+	}
+	iconv_close(cd);
+	return ret;
+}
 int main(int argc, char* argv[])
 {
 	int i, maxi, listenfd, connfd, sockfd, epfd,nfds;
 	ssize_t n;
-	char BUF[MAXLINE];
+	char BUF[MAXLINE],OUTBUF[MAXLINE],WBUF[MAXLINE];
 	memset(BUF, 0 , sizeof(BUF));
+	memset(BUF, 0 , sizeof(OUTBUF));
+	memset(BUF, 0 , sizeof(WBUF));
 	socklen_t clilen;
 
 	//ev用于注册事件,数组用于回传要处理的事件
@@ -44,7 +62,14 @@ int main(int argc, char* argv[])
 
 	bzero(&servaddr, sizeof(servaddr));
 	servaddr.sin_family = AF_INET;
-	servaddr.sin_addr.s_addr = htonl (INADDR_ANY);
+	/* struct in_addr addr; */
+	/* inet_pton(AF_INET, "192.168.100.100", (void *)&addr); */
+	/* 三种设置服务端sin_addr的方法 */
+	/* servaddr.sin_addr.s_addr = htonl(INADDR_ANY); */
+	/* servaddr.sin_addr.s_addr = inet_addr("127.0.0.1"); */
+	struct in_addr * addr = (struct in_addr *)malloc(sizeof(struct in_addr));
+	inet_pton(AF_INET, "192.168.100.100", addr);
+	servaddr.sin_addr = *addr;
 	servaddr.sin_port = htons (SERV_PORT);
 	bind(listenfd, (struct sockaddr *)&servaddr, sizeof(servaddr));
 	listen(listenfd, LISTENQ);
@@ -75,6 +100,7 @@ int main(int argc, char* argv[])
 
 			{
 				memset(BUF, 0, sizeof(BUF));
+				memset(OUTBUF, 0, sizeof(OUTBUF));
 				printf("EPOLLIN\n");
 				if ( (sockfd = events[i].data.fd) < 0)
 					continue;
@@ -89,30 +115,46 @@ int main(int argc, char* argv[])
 					events[i].data.fd = -1;
 				}
 				BUF[n] = '\0';
-				printf("%s\n", BUF);
-				/* cJSON * root = cJSON_Parse(BUF); */
-				/* char *rendered = cJSON_Print(root); */
-				/* printf("%s", rendered); */
-				/* char * msg = "这是回复："; */
-				/* strcat(BUF , "(这是回复)\n"); */
-				/* printf("msg:%s",BUF); */
+				size_t srclen = strlen(BUF);
+				size_t deslen = MAXLINE;
+				char * sp = BUF;
+				char * dp = OUTBUF;
+				if(convmsg(sp, dp, srclen, deslen, "GB2312", "utf-8") != -1)
+					printf("concmg:%s\n", OUTBUF);
+				else
+				{
+					printf("msg:%s\n", BUF);
+					memset(OUTBUF, 0 , sizeof(OUTBUF));
+				}
+				/* printf("%s\n", BUF); */
 				printf("AFTER EPOLLIN\n");
-
 				ev.data.fd=sockfd;
 				ev.events=EPOLLOUT|EPOLLET;//事件类型为写,当客户端read时触发
 				//读完后准备写
 				epoll_ctl(epfd,EPOLL_CTL_MOD,sockfd,&ev);
-				/* printf("begin to write\n"); */
-				/* write(events[i].data.fd, BUF, strlen(BUF)); */
-				/* printf("write end\n"); */
 			}
 			else if(events[i].events&EPOLLOUT) // 如果有数据发送
 			{
+				memset(WBUF, 0, sizeof(WBUF));
 				sockfd = events[i].data.fd;
-				strcat(BUF, "(回复消息)");
-				printf("begin to write%s\n", BUF);
-				write(sockfd, BUF, strlen(BUF));
-
+				printf("outlen:%d\n", strlen(OUTBUF));
+				if(strlen(OUTBUF) != 0)
+				{
+					strcat(OUTBUF, "(回复消息11)");
+					size_t srclen = strlen(OUTBUF);
+					size_t deslen = MAXLINE;
+					char * sp = OUTBUF;
+					char * dp = WBUF;
+					printf("begin to write%s\n", OUTBUF);
+					convmsg(sp, dp, srclen, deslen, "utf-8", "GB2312");
+					write(sockfd, WBUF, strlen(WBUF));
+				}
+				else
+				{
+					strcat(BUF, "(回复消息22)");
+					printf("begin to write%s\n", BUF);
+					write(sockfd, BUF, strlen(BUF));
+				}
 				ev.data.fd=sockfd;
 				ev.events=EPOLLIN|EPOLLET;//事件类型为读
 				//写完后，这个sockfd准备读
