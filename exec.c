@@ -1,6 +1,12 @@
 #include "apue.h"
 #include <sys/wait.h>
 extern char ** environ;
+/* exec函数： */
+/* l：表示使用可变参数列表，并且最后一个参数为NULL */
+/* p：表示path为文件名，自动在系统PATH中查找 */
+/* e：可以传递环境变量，使用最后一个参数，类型为char * env[] */
+/* v：表示命令所需的参数以char *arg[]形式给出且arg最后一个元素必须是NULL */
+/* execl execlp execle execv execvp execve */
 int main(int argc,char *args[])
 {
 	pid_t pid;
