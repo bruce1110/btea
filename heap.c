@@ -26,6 +26,8 @@ void maxheap_down(int data[], int start, int end)
 //节点索引为i的左孩子索引为2*i + 1,右孩子索引为2*i+2，父节点索引为floor((i-1)/2)
 int main(int argc, char * args[])
 {
+	printf("args:%s\n", args[0]);
+	printf("pid:%d\n", getpid());
 	int data[] = {10,100,65,45,87,98,76,98,101};
 	int i;
 	int ilen = sizeof(data)/sizeof(data[0]);
