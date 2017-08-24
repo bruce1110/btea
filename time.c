@@ -6,13 +6,11 @@
 int main(int argc,char * args[])
 {
 	struct timespec tp;
-	time_t t;
-	struct tm *tm;
+	struct tm t;
 	char buf[64];
+	//localtime不是线程安全的
 	clock_gettime(CLOCK_REALTIME, &tp);
-	t = tp.tv_sec;
-	tm = localtime(&t);
-	strftime(buf, 64, "%Y-%m-%d %H:%M:%S", tm);
+	strftime(buf, 64, "%Y-%m-%d %H:%M:%S", localtime_r(&tp.tv_sec, &t));
 	printf("%s", buf);
 	return 0;
 }
