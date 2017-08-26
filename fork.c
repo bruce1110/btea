@@ -10,7 +10,7 @@ int main()
 	pid_t pid;
 	if(write(STDOUT_FILENO, buf, sizeof(buf) - 1) != sizeof(buf) - 1)
 		exit(1);
-	printf("pid:%ldbefore fork\n", (long)getpid());
+	printf("pid:%ldbefore fork\n", (long)getpid());//没有flush，子进程缓冲区也会有内容
 	if((pid = fork()) < 0 )
 		exit(2);
 	else if(pid == 0)

@@ -68,7 +68,7 @@ int main(int argc, char* argv[])
 	/* servaddr.sin_addr.s_addr = htonl(INADDR_ANY); */
 	/* servaddr.sin_addr.s_addr = inet_addr("127.0.0.1"); */
 	struct in_addr * addr = (struct in_addr *)malloc(sizeof(struct in_addr));
-	inet_pton(AF_INET, "192.168.100.100", addr);
+	inet_pton(AF_INET, "10.0.0.2", addr);
 	servaddr.sin_addr = *addr;
 	servaddr.sin_port = htons (SERV_PORT);
 	bind(listenfd, (struct sockaddr *)&servaddr, sizeof(servaddr));
