@@ -1,0 +1,4 @@
+let g:netrw_dirhistmax  =10
+let g:netrw_dirhist_cnt =2
+let g:netrw_dirhist_1='/work/webliangcang'
+let g:netrw_dirhist_2='/work/webliangcang/adm_action_prog'
