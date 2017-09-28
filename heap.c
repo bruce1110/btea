@@ -28,7 +28,7 @@ int main(int argc, char * args[])
 {
 	printf("args:%s\n", args[0]);
 	printf("pid:%d\n", getpid());
-	int data[] = {10,100,65,45,87,98,76,98,101};
+	int data[] = {16,7,3,20,17,8};
 	int i;
 	int ilen = sizeof(data)/sizeof(data[0]);
 	printf("origin data\n");

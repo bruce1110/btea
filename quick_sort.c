@@ -10,14 +10,14 @@ void quick_sort(int s[], int l, int r)
 		x = s[i];//初始元素位置取第一个
 		while( i < j )
 		{
-			while(i < j && s[j] > x)//从右往左找到第一个小于x的元素
-				j--;
-			if(i < j)
-				s[i++] = s[j];
-			while(i < j && s[i] < x)//从左往右找第一个大于x的元素
-				i++;
-			if(i < j)
-				s[j--] = s[i];
+			while(i < j && s[j] >= x)//从右往左找到第一个小于x的元素
+				--j;
+			/* if(i < j) */
+			s[i] = s[j];
+			while(i < j && s[i] <= x)//从左往右找第一个大于x的元素
+				++i;
+			/* if(i < j) */
+			s[j] = s[i];
 		}
 		s[i] = x;
 		quick_sort(s, l, i-1);//递归调用
