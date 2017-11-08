@@ -1,0 +1,39 @@
+./configure  --prefix=/usr/local/php7 \
+--with-curl \ 
+--with-freetype-dir \
+--with-gd \
+--with-jpeg-dir \
+--with-gettext \
+--with-iconv-dir=/usr/local \
+--with-kerberos \
+--with-libdir=lib64 \
+--with-libxml-dir=/usr \
+--with-mysqli \
+--with-openssl \
+--with-pcre-regex \
+--with-pdo-mysql \
+--with-pdo-sqlite \
+--with-pear\
+--with-png-dir \
+--with-mhash \
+--with-ldap-sasl \
+--with-xmlrpc \
+--with-xsl \
+--with-zlib \
+--enable-fpm \
+--enable-bcmath \
+--enable-libxml \
+--enable-gd-native-ttf \
+--enable-mbregex \
+--enable-mbstring \
+--enable-opcache \
+--enable-pcntl \
+--enable-shmop\
+ --enable-soap \
+--enable-sockets \
+--enable-xml \
+--enable-zip \
+--with-config-file-path=/usr/local/php7/etc \
+--with-bz2 \
+--enable-inline-optimization \
+--enable-sysvsem
