@@ -1,13 +1,13 @@
 set nocscopeverbose
 " 状态栏  
- set laststatus=2      " 总是显示状态栏  
- highlight StatusLine cterm=bold ctermfg=yellow ctermbg=blue  
+set laststatus=2      " 总是显示状态栏  
+highlight StatusLine cterm=bold ctermfg=yellow ctermbg=blue  
 " " 获取当前路径，将$HOME转化为~  
-  function! CurDir()  
-     let curdir = substitute(getcwd(), $HOME, "~", "g")  
-  return curdir  
- endfunction
- set statusline=[%n]\ %f%m%r%h\ \|\ \ pwd:\ %{CurDir()}\ \ \|%=\|\ %l,%c\ %p%%\ \|\ ascii=%b,hex=%b%{((&fenc==\"\")?\"\":\"\ \|\ \".&fenc)}
+function! CurDir()  
+    let curdir = substitute(getcwd(), $HOME, "~", "g")  
+	return curdir  
+endfunction
+set statusline=[%n]\ %f%m%r%h\ \|\ \ pwd:\ %{CurDir()}\ \ \|%=\|\ %l,%c\ %p%%\ \|\ ascii=%b,hex=%b%{((&fenc==\"\")?\"\":\"\ \|\ \".&fenc)}
 set number
 colo desert
 syntax on
@@ -30,8 +30,11 @@ set cindent
 set omnifunc=phpcomplete
 set hidden
 set noswapfile
+set mouse=a "鼠标支持
+set showmatch
 filetype plugin on
-
+set foldmethod=marker
+set clipboard+=unnamed "和win共用剪切板
 imap <C-a> <Esc>:w!<CR>i
 :set pastetoggle=<F11>
 
@@ -49,7 +52,6 @@ let g:DoxygenToolkit_paramTag_pre="@params "
 let g:DoxygenToolkit_returnTag="@return"
 let g:DoxygenToolkit_authorName="Bruce"
 
-set foldmethod=marker
 
 
 let g:user_emmet_leader_key = '<C-e>'
