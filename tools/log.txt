@@ -1,10 +1,9 @@
-cscope
 #!/bin/bash
 
 find . -type f > cscope.file
 
 ctags -R
-echo 'tags 生成完毕'
+echo 'tags'
 
 cscope -Rbq -i cscope.file
-echo 'csfile 生成完毕'
+echo 'csfile'
