@@ -1,8 +1,6 @@
 #!/bin/bash
 
-find . -type f > cscope.file
-
-ctags -R
+find $1 -type f -name "*.php" > cscope.file
 echo 'tags 生成完毕'
 
 cscope -Rbq -i cscope.file

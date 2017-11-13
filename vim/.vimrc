@@ -1,4 +1,4 @@
-set nocscopeverbose
+set nocscopeverbose "屏幕cscope警告
 " 状态栏  
 set laststatus=2      " 总是显示状态栏  
 highlight StatusLine cterm=bold ctermfg=yellow ctermbg=blue  
@@ -10,31 +10,34 @@ endfunction
 set statusline=[%n]\ %f%m%r%h\ \|\ \ pwd:\ %{CurDir()}\ \ \|%=\|\ %l,%c\ %p%%\ \|\ ascii=%b,hex=%b%{((&fenc==\"\")?\"\":\"\ \|\ \".&fenc)}
 set number
 colo desert
-syntax on
-syntax enable
-set nocompatible
-"set foldenable
-set ignorecase
+syntax on "开启代码高亮
+syntax enable "同上
 autocmd VimEnter * NERDTree
 wincmd w
 autocmd VimEnter * wincmd w
-set tabstop=4
-set softtabstop=4
-set shiftwidth=4
+set nocompatible "不兼容vi
+set autoindent "ai.自动缩进，即为新行自动添加与当前行同等的缩进
+set cindent "ci.类似c的缩进
+set smartindent "si.基于autoindent的改进
+set tabstop=4 "ts.一个空格占多少空格
+set shiftwidth=4 "sw.使用每层缩进的空格数
+set expandtab "et.将tab自动展开成空格
+set softtabstop=4 "sts.方便在开启了et后使用退格（backspace）键，每次退格将删除X个空格
+set smarttab "sta.开启时，在行首按TAB将加入shiftwidth个空格，否则加入tabstop个空格
 set encoding=utf-8
-" set backspace=indent,eol,start
-" set expandtab
-set autoindent
-set smartindent
-set cindent
 set omnifunc=phpcomplete
 set hidden
 set noswapfile
-set mouse=a "鼠标支持
-set showmatch
+" set mouse=a "鼠标支持
+set showmatch "显示匹配的括号
+set hlsearch "搜索高亮
+set ignorecase "搜索忽略大小写
+set autoread "外部文件被改变时，vim自动更新
+"set cursorline "强调光标所在行
+set ruler "光标位置
 filetype plugin on
 set foldmethod=marker
-set clipboard+=unnamed "和win共用剪切板
+"set clipboard+=unnamed "和win共用剪切板
 imap <C-a> <Esc>:w!<CR>i
 :set pastetoggle=<F11>
 
