@@ -1,0 +1,5 @@
+#!/bin/bash
+
+
+kill -USR2 `cat /usr/local/var/run/php-fpm.pid`
+kill -USR2 `cat /usr/local/php7/var/run/php-fpm.pid`
